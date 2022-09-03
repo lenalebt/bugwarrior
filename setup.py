@@ -92,5 +92,6 @@ setup(name='bugwarrior',
       azuredevops=bugwarrior.services.azuredevops:AzureDevopsService
       gitbug=bugwarrior.services.gitbug:GitBugService
       deck=bugwarrior.services.deck:NextcloudDeckService
+      flatastic=bugwarrior.services.flatastic:FlatasticService
       """,
       )
