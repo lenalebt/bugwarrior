@@ -77,11 +77,11 @@ class FlatasticIssue(Issue):
             'label': 'Flatastic Points',
         },
         LAST_DONE_DATE: {
-            'type': 'string',
+            'type': 'date',
             'label': 'Flatastic Last Done Date',
         },
         NEXT_EXECUTION_TIME: {
-            'type': 'string',
+            'type': 'date',
             'label': 'Flatastic Next Execution Time',
         }
     }
@@ -90,12 +90,11 @@ class FlatasticIssue(Issue):
 
     def to_taskwarrior(self):
         return {
-            'project': 'flatastic',
+            'project': '',
             'priority': self.get_priority(),
-            # 'annotations': self.record.get('annotations', []),
             'tags': self.get_tags(),
             'entry': datetime.datetime.fromtimestamp(self.record.get('lastDoneDate'), tz=tzutc()),
-            'due': (datetime.datetime.now(tz=tzutc()) + datetime.timedelta(
+            'due': (datetime.datetime.now(tz=tzutc()).replace(second=0, microsecond=0) + datetime.timedelta(
                 seconds=self.record.get('timeLeftNext'))).replace(second=0, microsecond=0),
 
             self.ID: self.record['id'],
@@ -104,13 +103,13 @@ class FlatasticIssue(Issue):
             self.CURRENT_USER: self.record['currentUser'],
             self.POINTS: self.record['points'],
             self.LAST_DONE_DATE: datetime.datetime.fromtimestamp(self.record['lastDoneDate'], tz=tzutc()),
-            self.NEXT_EXECUTION_TIME: (datetime.datetime.now(tz=tzutc()) +
+            self.NEXT_EXECUTION_TIME: (datetime.datetime.now(tz=tzutc()).replace(second=0, microsecond=0) +
                                        datetime.timedelta(seconds=self.record.get('timeLeftNext'))).replace(second=0,
                                                                                                             microsecond=0),
         }
 
     def get_tags(self):
-        return []
+        return self.get_tags_from_labels([])
 
     def get_default_description(self):
         return self.build_default_description(title=self.record['title'])
